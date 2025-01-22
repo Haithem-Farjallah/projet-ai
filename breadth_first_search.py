@@ -1,23 +1,25 @@
 from collections import deque
 from timeit import default_timer as timer
 
-
 def breadth_first_search(graph, start, goal):
-    start_time = timer()  
-   
-    visited = set() 
-    queue = deque([(start, [start], 0)]) 
+    start_time = timer()
 
+    visited = set()
+    queue = deque([(start, [start], 0)])  # (node, path, cost)
+    explored_nodes = 0  # Compteur pour le nombre de nœuds explorés
 
     while queue:
         current_node, path, cost = queue.popleft()
+        explored_nodes += 1  # Incrémenter le compteur pour chaque nœud exploré
 
-
-        if current_node == goal: 
-            end_time = timer()  
-            print(f"BFS - Chemin trouvé: {path}, Coût total: {cost}, Temps d'exécution: {end_time - start_time:.6f} secondes")
+        if current_node == goal:
+            end_time = timer()
+            elapsed_time = end_time - start_time
+            print(f"BFS - Chemin trouvé: {path}")
+            print(f" Coût total: {cost}")
+            print(f" Nœuds explorés: {explored_nodes}")
+            print(f" Temps d'exécution: {elapsed_time:.6f} secondes")
             return path, cost
-
 
         if current_node not in visited:
             visited.add(current_node)
@@ -25,14 +27,14 @@ def breadth_first_search(graph, start, goal):
                 if neighbor not in visited:
                     queue.append((neighbor, path + [neighbor], cost + weight))
 
-
     end_time = timer()
-    print(f"BFS - Aucun chemin trouvé. Temps d'exécution: {end_time - start_time:.6f} secondes")
+    elapsed_time = end_time - start_time
+    print(f"BFS - Aucun chemin trouvé.")
+    print(f" Nœuds explorés: {explored_nodes}")
+    print(f" Temps d'exécution: {elapsed_time:.6f} secondes")
     return None, float('inf')
 
-
-
-
+# Graphe d'exemple
 graph = {
     'A': [('B', 5), ('C', 2), ('D', 8)],
     'B': [('A', 5), ('E', 10), ('F', 3)],
@@ -52,8 +54,6 @@ graph = {
     'P': [('J', 15)]
 }
 
-
-
-
+# Appel de la fonction
 print("\n--- BFS ---")
 bfs_result = breadth_first_search(graph, 'A', 'P')

@@ -1,26 +1,27 @@
 import heapq
 from timeit import default_timer as timer
 
-
 def a_star_search(graph, start, goal, heuristic):
-    start_time = timer()  
-   
+    start_time = timer()
+    
     open_set = []  
-    heapq.heappush(open_set, (0, start, [start], 0))  
-
-
+    heapq.heappush(open_set, (0, start, [start], 0))  # (estimated_cost, node, path, current_cost)
+    
     visited = set()
-
+    explored_nodes = 0  # Compteur pour le nombre de nœuds explorés
 
     while open_set:
         _, current_node, path, current_cost = heapq.heappop(open_set)
+        explored_nodes += 1  # Incrémenter le compteur pour chaque nœud exploré
 
-
-        if current_node == goal:  
-            end_time = timer()  
-            print(f"A* - Chemin trouvé: {path}, Coût total: {current_cost}, Temps d'exécution: {end_time - start_time:.6f} secondes")
+        if current_node == goal:
+            end_time = timer()
+            elapsed_time = end_time - start_time
+            print(f"A* - Chemin trouvé: {path}")
+            print(f" Coût total: {current_cost}")
+            print(f" Nœuds explorés: {explored_nodes}")
+            print(f" Temps d'exécution: {elapsed_time:.6f} secondes")
             return path, current_cost
-
 
         if current_node not in visited:
             visited.add(current_node)
@@ -29,12 +30,14 @@ def a_star_search(graph, start, goal, heuristic):
                     estimated_cost = current_cost + weight + heuristic(neighbor, goal)
                     heapq.heappush(open_set, (estimated_cost, neighbor, path + [neighbor], current_cost + weight))
 
-
     end_time = timer()
-    print(f"A* - Aucun chemin trouvé. Temps d'exécution: {end_time - start_time:.6f} secondes")
+    elapsed_time = end_time - start_time
+    print(f"A* - Aucun chemin trouvé.")
+    print(f" Nœuds explorés: {explored_nodes}")
+    print(f" Temps d'exécution: {elapsed_time:.6f} secondes")
     return None, float('inf')
 
-
+# Graphe d'exemple
 graph = {
     'A': [('B', 5), ('C', 2), ('D', 8)],
     'B': [('A', 5), ('E', 10), ('F', 3)],
@@ -53,6 +56,8 @@ graph = {
     'O': [('I', 8)],
     'P': [('J', 15)]
 }
+
+# Fonction heuristique
 def heuristic(node, goal):
     heuristic_values = {
         'A': 10, 'B': 8, 'C': 7, 'D': 9,
@@ -62,5 +67,5 @@ def heuristic(node, goal):
     }
     return heuristic_values[node]
 
-
+# Appel de la fonction
 path, cost = a_star_search(graph, 'A', 'P', heuristic)
